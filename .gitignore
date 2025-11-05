@@ -1,0 +1,6 @@
+# temporary(still working on frontend.)
+frontend/
+
+# Node stuff
+node_modules/
+.env
