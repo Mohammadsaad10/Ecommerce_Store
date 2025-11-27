@@ -1,0 +1,9 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Minimal app background fallback: keep a dark base color but avoid
+   aggressively hiding pseudo-elements (some components rely on them). */
+html, body, #root {
+  background-color: #0f1724; /* fallback/background color */
+}
