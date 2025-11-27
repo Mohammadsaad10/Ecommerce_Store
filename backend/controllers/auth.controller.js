@@ -145,7 +145,7 @@ export const refreshAccToken = async (req, res) => {
     res.cookie("accessToken", accessToken, {
       httpOnly: true, //prevents XSS attacks (cross-site scripting attacks)
       secure: process.env.NODE_ENV === "production",
-      sameSite: "Strict", //prevent CSRF attacks, cross-site request forgery attack.
+      sameSite: process.env.NODE_ENV === "production" ? "Strict" : "Lax", //prevent CSRF attacks, cross-site request forgery attack.
       maxAge: 15 * 60 * 1000, // 15 minutes
     });
 
@@ -157,4 +157,10 @@ export const refreshAccToken = async (req, res) => {
 };
 
 //to be implemented : getProfile controller.
-export const getProfile = async (req, res) => {};
+export const getProfile = async (req, res) => {
+  try {
+    res.json(req.user);
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};

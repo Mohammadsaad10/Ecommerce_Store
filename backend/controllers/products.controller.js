@@ -1,12 +1,12 @@
 import Product from "../models/products.model.js";
-import {redis} from "../lib/redis.js";
+import { redis } from "../lib/redis.js";
 import { json } from "express";
+import cloudinary from "../lib/cloudinary.js";
 
 export const getAllProducts = async (req, res) => {
   try {
-    const prouduct = await Product.find();
-
-    res.status(200).json({ prouduct });
+    const products = await Product.find();
+    res.status(200).json({ products });
   } catch (error) {
     console.log("Error in getAllProducts controller!");
     res.status(500).json({ message: "Internal server error" });
@@ -39,10 +39,10 @@ export const getFeaturedProducts = async (req, res) => {
 
 export const createProduct = async (req, res) => {
   try {
-    const { name, discription, price, image, category } = req.body;
+    const { name, description, price, image, category } = req.body;
 
     let cloudinaryResponse = null;
-
+    //we can store image in mongo DB, but using dedicated image hosting service/cdn like cloudinary is better for performance and scalability in production.
     if (image) {
       cloudinaryResponse = await cloudinary.uploader.upload(image, {
         folder: "products",
@@ -51,9 +51,9 @@ export const createProduct = async (req, res) => {
 
     //cloudinaryResponse will return an object containing details about the uploaded image, including its URL.
 
-    const product = Product.create({
+    const product = await Product.create({
       name,
-      discription,
+      description,
       price,
       image: cloudinaryResponse?.secure_url
         ? cloudinaryResponse.secure_url
